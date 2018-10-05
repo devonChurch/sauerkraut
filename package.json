@@ -4,7 +4,8 @@
   "description": "A GitHub NPM module reference test",
   "main": "sauerkraut.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "parcel build src/index.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,7 @@
   },
   "homepage": "https://github.com/devonChurch/sauerkraut#readme",
   "devDependencies": {
-    "gradient-string": "^1.2.0"
+    "gradient-string": "^1.2.0",
+    "parcel-bundler": "^1.10.1"
   }
 }
