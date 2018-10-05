@@ -1,0 +1,22 @@
+{
+  "name": "sauerkraut",
+  "version": "1.0.0",
+  "description": "A GitHub NPM module reference test",
+  "main": "sauerkraut.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devonChurch/sauerkraut.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/devonChurch/sauerkraut/issues"
+  },
+  "homepage": "https://github.com/devonChurch/sauerkraut#readme",
+  "devDependencies": {
+    "gradient-string": "^1.2.0"
+  }
+}
