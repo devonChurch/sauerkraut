@@ -1,0 +1,60 @@
+version: 0.2
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+env:
+  parameter-store:
+    NPM_TOKEN: "/sauerkraut/npm/token"
+    NPM_USER: "/sauerkraut/npm/user"
+    NPM_PASSWORD: "/sauerkraut/npm/password"
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+phases:
+  install:
+    commands:
+      - echo "install dependancies..."
+      - npm install
+    finally:
+      - echo "...installed dependancies"
+
+  pre_build:
+    commands:
+      - echo "node version"
+      - node --version
+
+      - echo "npm version"
+      - npm --version
+
+      - echo "npm token"
+      - echo "$NPM_TOKEN"
+
+      - echo "create .npmrc file..."
+      - echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
+      # - echo "//registry.npmjs.org/:_password=$NPM_USER" >> ~/.npmrc
+      # - echo "//registry.npmjs.org/:username=$NPM_PASSWORD" >> ~/.npmrc
+      - echo "...createed .npmrc file"
+      - cat ~/.npmrc
+
+      # - npm adduser --registry="https://registry.npmjs.org/:_authToken=$NPM_TOKEN" --always-auth
+
+  build:
+    commands:
+      - echo "create package..."
+      - npm run build
+      - npm pack
+    finally:
+      - echo "...created package"
+
+  post_build:
+    commands:
+      - echo "publish to npm..."
+      - npm publish
+    finally:
+      - echo "...published to npm"
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+cache:
+  paths:
+    - "node_modules/**/*"
