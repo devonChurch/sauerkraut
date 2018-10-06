@@ -49,7 +49,7 @@ phases:
   post_build:
     commands:
       - echo "publish to npm..."
-      - npm publish
+      - npm publish --access="public"
     finally:
       - echo "...published to npm"
 
