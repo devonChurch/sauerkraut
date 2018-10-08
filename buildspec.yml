@@ -5,8 +5,6 @@ version: 0.2
 env:
   parameter-store:
     NPM_TOKEN: "/sauerkraut/npm/token"
-    NPM_USER: "/sauerkraut/npm/user"
-    NPM_PASSWORD: "/sauerkraut/npm/password"
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -29,14 +27,16 @@ phases:
       - echo "npm token"
       - echo "$NPM_TOKEN"
 
+      - VERSION="$(npm view . version)"
+      - echo "package version"
+      - echo "$VERSION"
+
       - echo "create .npmrc file..."
+      # Note: Must reference the file system root ~/.npmrc and not the copy
+      # associated to the project
       - echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
-      # - echo "//registry.npmjs.org/:_password=$NPM_USER" >> ~/.npmrc
-      # - echo "//registry.npmjs.org/:username=$NPM_PASSWORD" >> ~/.npmrc
       - echo "...createed .npmrc file"
       - cat ~/.npmrc
-
-      # - npm adduser --registry="https://registry.npmjs.org/:_authToken=$NPM_TOKEN" --always-auth
 
   build:
     commands:
@@ -50,6 +50,9 @@ phases:
     commands:
       - echo "publish to npm..."
       - npm publish --access="public"
+
+      - echo "publish to s3..."
+      - aws s3 cp s3://sauerkraut/$VERSION/package.tgz ./devon-church-sauerkraut-$VERSION.tgz
     finally:
       - echo "...published to npm"
 
