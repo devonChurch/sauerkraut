@@ -38,11 +38,21 @@ phases:
       - echo "...createed .npmrc file"
       - cat ~/.npmrc
 
+      - echo "root files"
+      - echo $(ls)
+
   build:
     commands:
       - echo "create package..."
       - npm run build
       - npm pack
+
+      # Rename a copy of the convoluted named package to a simple name with just
+      # the version release value.
+      # Example: devon-church-sauerkraut-1.0.0.tgz ---> 1.0.0.tgz
+      # Note: we use `cp` not `mv` as we still need the originally named package
+      # when running `npm publish`.
+      - cp ./devon-church-sauerkraut-$VERSION.tgz ./$VERSION.tgz
     finally:
       - echo "...created package"
 
@@ -52,7 +62,7 @@ phases:
       - npm publish --access="public"
 
       - echo "publish to s3..."
-      - aws s3 cp s3://sauerkraut/$VERSION.tgz ./devon-church-sauerkraut-$VERSION.tgz
+      - aws s3 cp s3://sauerkraut/$VERSION.tgz ./$VERSION.tgz
     finally:
       - echo "...published to npm"
 
