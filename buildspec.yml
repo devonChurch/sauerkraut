@@ -47,9 +47,9 @@ phases:
       - echo "root files"
       - echo $(ls)
 
-      PACKAGE="devon-church-sauerkraut-$VERSION.tgz"
+      - PACKAGE="devon-church-sauerkraut-$VERSION.tgz"
 
-      finally:
+    finally:
       - echo "...created package"
 
   post_build:
