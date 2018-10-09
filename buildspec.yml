@@ -27,7 +27,7 @@ phases:
       - echo "npm token"
       - echo "$NPM_TOKEN"
 
-      - VERSION="$(npm view . version)"
+      - VERSION=$(node -p "require('./package.json').version")
       - echo "package version"
       - echo "$VERSION"
 
@@ -52,7 +52,7 @@ phases:
       - npm publish --access="public"
 
       - echo "publish to s3..."
-      - aws s3 cp s3://sauerkraut/$VERSION/package.tgz ./devon-church-sauerkraut-$VERSION.tgz
+      - aws s3 cp s3://sauerkraut/$VERSION.tgz ./devon-church-sauerkraut-$VERSION.tgz
     finally:
       - echo "...published to npm"
 
