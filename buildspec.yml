@@ -58,7 +58,7 @@ phases:
       - npm publish --access="public"
 
       - echo "publish to s3..."
-      - aws s3 cp ./$PACKAGE s3://sauerkraut/$VERSION.tgz
+      - aws s3 cp ./$PACKAGE s3://sauerkraut/$VERSION.tgz --acl="public-read" --storage-class="REDUCED_REDUNDANCY"
     finally:
       - echo "...published to npm"
 
