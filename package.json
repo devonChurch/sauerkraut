@@ -7,6 +7,9 @@
     "sauerkraut": "./package.js"
   },
   "scripts": {
+    "bump:major": "npm version major --no-git-tag-version",
+    "bump:minor": "npm version minor --no-git-tag-version",
+    "bump:patch": "npm version patch --no-git-tag-version",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "parcel build src/index.js"
   },
