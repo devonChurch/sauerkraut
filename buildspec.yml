@@ -44,9 +44,9 @@ phases:
       - npm run build
       - npm pack
 
-      - echo "root files"
-      - echo $(ls)
-
+      # The "convoluted" name of the package created from `npm pack`.
+      # Example: devon-church-sauerkraut-1.0.0.tgz
+      #        : <scope>-<name>-<version>.tgz
       - PACKAGE="devon-church-sauerkraut-$VERSION.tgz"
 
     finally:
@@ -54,13 +54,24 @@ phases:
 
   post_build:
     commands:
-      - echo "publish to npm..."
-      - npm publish --access="public"
+      # - echo "publish to npm..."
+      # - npm publish --access="public"
 
-      - echo "publish to s3..."
-      - aws s3 cp ./$PACKAGE s3://sauerkraut/$VERSION.tgz --acl="public-read" --storage-class="REDUCED_REDUNDANCY"
+      # - echo "publish to s3..."
+      # - aws s3 cp ./$PACKAGE s3://sauerkraut/$VERSION.tgz --acl="public-read" --storage-class="REDUCED_REDUNDANCY"
+
+      - git --version
+      - git --help
+      - git branch
+      - git remote -v
+      - git fetch
+      - git branch -a
+
+      - echo "publish to github..."
     finally:
-      - echo "...published to npm"
+      # - echo "...published to npm"
+      # - echo "...published to s3"
+      # - echo "...published to github"
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
