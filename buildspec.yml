@@ -5,6 +5,9 @@ version: 0.2
 env:
   parameter-store:
     NPM_TOKEN: "/sauerkraut/npm/token"
+    GITHUB_TOKEN: "/sauerkraut/github/token"
+    GITHUB_NAME: "/sauerkraut/github/name"
+    GITHUB_EMAIL: "/sauerkraut/github/email"
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
@@ -18,18 +21,15 @@ phases:
 
   pre_build:
     commands:
-      - echo "node version"
-      - node --version
-
-      - echo "npm version"
-      - npm --version
-
-      - echo "npm token"
-      - echo "$NPM_TOKEN"
+      - echo "node version = $(node --version)"
+      - echo "npm version = $(npm --version)"
+      - echo "npm token = $NPM_TOKEN"
+      - echo "github token = $GITHUB_TOKEN"
+      - echo "github name = $GITHUB_NAME"
+      - echo "github email = $GITHUB_EMAIL"
 
       - VERSION=$(node -p "require('./package.json').version")
-      - echo "package version"
-      - echo "$VERSION"
+      - echo "package version = $VERSION"
 
       - echo "create .npmrc file..."
       # Note: Must reference the file system root ~/.npmrc and not the copy
@@ -67,16 +67,31 @@ phases:
       - git fetch
       - git branch -a
 
+      - git config user.name $GITHUB_NAME
+      - git config user.email $GITHUB_EMAIL
+      - git remote set-url origin https://devonChurch:$GITHUB_TOKEN@github.com/devonChurch/sauerkraut.git
+      # xxxx
       - mkdir release
       - cp package.json release/package.json
       - cp package.js release/package.js
       - cp -rf dist release/dist
+      # xxxx
       - git checkout .
       - git checkout release
+      # xxxx
+      - rm .gitignore || echo "no .gitignore to remove"
+      - echo "/*" >> .gitignore
+      - echo "!package.json" >> .gitignore
+      - echo "!package.js" >> .gitignore
+      - echo "!dist/" >> .gitignore
+      # xxxx
       - cp -rf release/* ./
+      # xxxx
       - git add .
       - git commit -m "add release $VERSION assets"
       - git tag -a v$VERSION -m "create v$VERSION release"
+
+      # - git remote -v
       - git push origin release --tags
 
       - echo "publish to github..."
