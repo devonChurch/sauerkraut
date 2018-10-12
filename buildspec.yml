@@ -67,6 +67,18 @@ phases:
       - git fetch
       - git branch -a
 
+      - mkdir release
+      - cp package.json release/package.json
+      - cp package.js release/package.js
+      - cp -rf dist release/dist
+      - git checkout .
+      - git checkout release
+      - cp -rf release/* ./
+      - git add .
+      - git commit -m "add release $VERSION assets"
+      - git tag -a v$VERSION -m "create v$VERSION release"
+      - git push origin release --tags
+
       - echo "publish to github..."
     finally:
       # - echo "...published to npm"
