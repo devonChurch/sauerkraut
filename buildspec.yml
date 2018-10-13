@@ -54,51 +54,58 @@ phases:
 
   post_build:
     commands:
-      # - echo "publish to npm..."
-      # - npm publish --access="public"
+      - echo "publish to npm..."
+      - npm publish --access="public"
 
-      # - echo "publish to s3..."
-      # - aws s3 cp ./$PACKAGE s3://sauerkraut/$VERSION.tgz --acl="public-read" --storage-class="REDUCED_REDUNDANCY"
+      - echo "publish to s3..."
+      - aws s3 cp ./$PACKAGE s3://sauerkraut/$VERSION.tgz --acl="public-read" --storage-class="REDUCED_REDUNDANCY"
 
-      - git --version
-      - git --help
-      - git branch
-      - git remote -v
-      - git fetch
-      - git branch -a
-
+      - echo "publish to github..."
+      # Setup config / token authentication to push back up to Github with the
+      # release source / tags.
       - git config user.name $GITHUB_NAME
       - git config user.email $GITHUB_EMAIL
       - git remote set-url origin https://devonChurch:$GITHUB_TOKEN@github.com/devonChurch/sauerkraut.git
-      # xxxx
+      # Inside the `master` branch create a new "release" folder that is not
+      # attached to the Git index. Place a copy of the required NPM package assets
+      # into the release folder.
       - mkdir release
       - cp package.json release/package.json
       - cp package.js release/package.js
       - cp -rf dist release/dist
-      # xxxx
+      # Reset any changed files inside the `master` branch (e.g package-lock.json)
+      # so that we can swap to our `release` branch without issue.
+      # NOTE: the release folder does not force Git to error out with an "unstaged
+      # files" message when swapping branches as it is not part of the Git index.
       - git checkout .
       - git checkout release
-      # xxxx
+      # Create a new `.gitingore` file specifically for the release branch that
+      # targets the required required NPM package assets.
+      # NOTE: we are "white listing" files not "black listing" files inside the
+      # `.gitignore` reference =)
       - rm .gitignore || echo "no .gitignore to remove"
       - echo "/*" >> .gitignore
       - echo "!package.json" >> .gitignore
       - echo "!package.js" >> .gitignore
       - echo "!dist/" >> .gitignore
-      # xxxx
+      # Copy the contents of the `release` folder into the root repository directory
+      # (replacing any existing file references).
       - cp -rf release/* ./
-      # xxxx
+      # Create a commit with the new release files and create a new tag reference
+      # to said commit =)
       - git add .
       - git commit -m "add release $VERSION assets"
       - git tag -a v$VERSION -m "create v$VERSION release"
-
-      # - git remote -v
       - git push origin release --tags
-
+      # Push up our new bundle to our release branch along with the tag reference.
+      # NOTE: The `release` branch ONLY has the bare minimum assets required to
+      # appease NPM. The actual "source code" lives on `master`.
       - echo "publish to github..."
+
     finally:
-      # - echo "...published to npm"
-      # - echo "...published to s3"
-      # - echo "...published to github"
+      - echo "...published to npm"
+      - echo "...published to s3"
+      - echo "...published to github"
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
