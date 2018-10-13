@@ -1,6 +1,6 @@
 {
   "name": "@devon-church/sauerkraut",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "A GitHub NPM module reference test",
   "main": "package.js",
   "bin": {
